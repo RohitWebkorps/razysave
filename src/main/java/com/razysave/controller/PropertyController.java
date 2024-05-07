@@ -1,5 +1,6 @@
 package com.razysave.controller;
 
+import com.razysave.dto.property.PropertyDto;
 import com.razysave.entity.property.Property;
 import com.razysave.exception.BuildingNotFoundException;
 import com.razysave.exception.PropertyNotFoundException;
@@ -23,15 +24,14 @@ public class PropertyController {
     private PropertyService propertyService;
 
     @GetMapping
-    public ResponseEntity<List<Property>> getProperties() {
+    public ResponseEntity<List<PropertyDto>> getProperties() {
         logger.info("Fetching Property list");
-        List<Property> properties = propertyService.getProperties();
-        if (properties.isEmpty()) {
-            logger.info("Property list is empty");
-            return ResponseEntity.ok(Collections.emptyList());
-        } else {
-            logger.info("Fetched Property list successfully");
+        try {
+        List<PropertyDto> properties = propertyService.getProperties();
             return ResponseEntity.ok(properties);
+        } catch(PropertyNotFoundException e) {
+            logger.info("Fetched Property list successfully");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
@@ -51,7 +51,7 @@ public class PropertyController {
     @PostMapping("/")
     public ResponseEntity<Object> addProperties(@RequestBody Property property) {
         propertyService.addProperty(property);
-        return ResponseHandler.generateResponse("Added succesfully", HttpStatus.CREATED, property);
+        return ResponseHandler.generateResponse("Added successfully", HttpStatus.CREATED, property);
     }
 
     @PutMapping("/{id}")

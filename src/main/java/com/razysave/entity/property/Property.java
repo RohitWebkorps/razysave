@@ -1,14 +1,12 @@
 package com.razysave.entity.property;
 
 import jakarta.persistence.Id;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Document(collection = "property")
 public class Property {
