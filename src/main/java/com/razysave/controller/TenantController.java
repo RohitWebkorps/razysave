@@ -1,5 +1,6 @@
 package com.razysave.controller;
 
+import com.razysave.dto.tenant.TenantDto;
 import com.razysave.entity.tenant.Tenant;
 import com.razysave.exception.BuildingNotFoundException;
 import com.razysave.exception.TenantNotFoundException;
@@ -25,7 +26,7 @@ public class TenantController {
     @GetMapping("/")
     public ResponseEntity<Object> getTenants() {
         logger.info("Fetching Tenant list");
-        List<Tenant> tenants = tenantService.getTenants();
+        List<TenantDto> tenants = tenantService.getTenants();
         if (tenants.isEmpty()) {
             logger.info("Tenant list is empty");
             return ResponseEntity.ok(Collections.emptyList());
@@ -39,7 +40,7 @@ public class TenantController {
     public ResponseEntity<Object> getTenantByName(@PathVariable Integer id) {
         try {
             logger.info("Fetching Tenant with id {}", id);
-            Tenant tenant = tenantService.getTenantByName(id);
+            Tenant tenant = tenantService.getTenantById(id);
             return ResponseEntity.ok(tenant);
         } catch (BuildingNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

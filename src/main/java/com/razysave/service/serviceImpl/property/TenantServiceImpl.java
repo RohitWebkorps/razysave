@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TenantServiceImpl implements TenantService {
@@ -30,17 +31,21 @@ public class TenantServiceImpl implements TenantService {
     private BuildingRepository buildingRepository;
     private ModelMapper modelMapper = new ModelMapper();
 
-    public List<Tenant> getTenants() {
+    public List<TenantDto> getTenants() {
         List<Tenant> tenants = tenantRepository.findAll();
-        return tenants;
+        return tenants.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
-    public Tenant getTenantByName(Integer id) {
+    public Tenant getTenantById(Integer id) {
         Optional<Tenant> tenantOptional = tenantRepository.findById(id);
         if (tenantOptional.isPresent())
             return tenantOptional.get();
         else
             throw new TenantNotFoundException("Tenant not found with id:" + id);
+
+
     }
 
     public Tenant addTenant(Tenant tenant) {
@@ -124,6 +129,7 @@ public class TenantServiceImpl implements TenantService {
                     Property property = propertyOptional.get();
                     tenantProperty.setUnitName(unit.getName());
                     tenantProperty.setPropertyName(property.getName());
+                    dto.setProperty(tenantProperty);
                 }
             }
         }
