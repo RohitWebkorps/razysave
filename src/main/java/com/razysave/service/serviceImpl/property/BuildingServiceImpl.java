@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -70,6 +69,11 @@ public class BuildingServiceImpl implements BuildingService {
             if (updatedBuilding.getName() != null) {
                 exisitingBuilding.setName(updatedBuilding.getName());
             }
+            if (updatedBuilding.getUnits() != null) {
+                if (exisitingBuilding.getUnits() != null)
+                    exisitingBuilding.getUnits().addAll(updatedBuilding.getUnits());
+                else exisitingBuilding.setUnits(updatedBuilding.getUnits());
+            }
             logger.info("End of updateBuilding(Integer id, Building updatedBuilding) method");
             return buildingRepository.save(exisitingBuilding);
         } else {
@@ -89,8 +93,12 @@ public class BuildingServiceImpl implements BuildingService {
             if (optionalProperty.isPresent()) {
                 Property property = optionalProperty.get();
                 property.setUnitCount(property.getUnitCount() - building.getUnitCount());
-                property.setBuildingCount(property.getBuildingCount() - 1);
-                property.getBuilding().remove(building);
+
+                List<Building> updatedBuildings = property.getBuilding().stream()
+                        .filter(b -> !b.getId().equals(building.getId()))
+                        .collect(Collectors.toList());
+                property.setBuilding(updatedBuildings);
+                property.setBuildingCount(updatedBuildings.size());
                 propertyRepository.save(property);
             }
             for (Unit unit : units) {

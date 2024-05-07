@@ -1,14 +1,17 @@
 package com.razysave.service.serviceImpl.property;
 
+import com.razysave.dto.tenant.TenantDto;
 import com.razysave.entity.property.Building;
 import com.razysave.entity.property.Property;
 import com.razysave.entity.property.Unit;
 import com.razysave.entity.tenant.Tenant;
+import com.razysave.exception.TenantNotFoundException;
 import com.razysave.repository.property.BuildingRepository;
 import com.razysave.repository.property.PropertyRepository;
 import com.razysave.repository.property.UnitRepository;
 import com.razysave.repository.tenant.TenantRepository;
 import com.razysave.service.property.TenantService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +28,19 @@ public class TenantServiceImpl implements TenantService {
     private PropertyRepository propertyRepository;
     @Autowired
     private BuildingRepository buildingRepository;
+    private ModelMapper modelMapper = new ModelMapper();
 
     public List<Tenant> getTenants() {
         List<Tenant> tenants = tenantRepository.findAll();
         return tenants;
     }
 
-    public Tenant getTenantByName(String name) {
-        Tenant tenant = tenantRepository.findByName(name);
-        return tenant;
+    public Tenant getTenantByName(Integer id) {
+        Optional<Tenant> tenantOptional = tenantRepository.findById(id);
+        if (tenantOptional.isPresent())
+            return tenantOptional.get();
+        else
+            throw new TenantNotFoundException("Tenant not found with id:" + id);
     }
 
     public Tenant addTenant(Tenant tenant) {
@@ -101,5 +108,25 @@ public class TenantServiceImpl implements TenantService {
         else{
             throw new RuntimeException("Tenant not found with id : " +id);
         }
+    }
+
+    private TenantDto mapToDto(Tenant tenant) {
+        TenantDto dto = modelMapper.map(tenant, TenantDto.class);
+        Optional<Unit> unitOptional = unitRepository.findById(dto.getUnitId());
+        if (unitOptional.isPresent()) {
+            Unit unit = unitOptional.get();
+            com.razysave.dto.tenant.Property tenantProperty = new com.razysave.dto.tenant.Property();
+            Optional<Building> buildingOptional = buildingRepository.findById(unit.getBuildingId());
+            if (buildingOptional.isPresent()) {
+                Building building = buildingOptional.get();
+                Optional<Property> propertyOptional = propertyRepository.findById(building.getPropertyId());
+                if (propertyOptional.isPresent()) {
+                    Property property = propertyOptional.get();
+                    tenantProperty.setUnitName(unit.getName());
+                    tenantProperty.setPropertyName(property.getName());
+                }
+            }
+        }
+        return dto;
     }
 }

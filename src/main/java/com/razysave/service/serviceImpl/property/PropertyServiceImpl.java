@@ -71,7 +71,7 @@ public class PropertyServiceImpl implements PropertyService {
                 if (exisitingProperty.getBuilding() != null)
                     exisitingProperty.getBuilding().addAll(updatedproperty.getBuilding());
                 else exisitingProperty.setBuilding(updatedproperty.getBuilding());
-                updatedproperty.setBuildingCount(exisitingProperty.getBuilding().size());
+                exisitingProperty.setBuildingCount(exisitingProperty.getBuilding().size());
             }
             if (updatedproperty.getTenantCount() != null) {
                 exisitingProperty.setTenantCount(updatedproperty.getTenantCount());

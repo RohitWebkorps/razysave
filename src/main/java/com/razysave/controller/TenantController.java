@@ -35,11 +35,11 @@ public class TenantController {
         }
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<Object> getTenantByName(@PathVariable String name) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getTenantByName(@PathVariable Integer id) {
         try {
-            logger.info("Fetching Tenant with name {}", name);
-            Tenant tenant = tenantService.getTenantByName(name);
+            logger.info("Fetching Tenant with id {}", id);
+            Tenant tenant = tenantService.getTenantByName(id);
             return ResponseEntity.ok(tenant);
         } catch (BuildingNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

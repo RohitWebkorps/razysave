@@ -4,10 +4,12 @@ import com.razysave.dto.device.DeviceListDto;
 import com.razysave.dto.unit.UnitInfoDto;
 import com.razysave.dto.unit.UnitListDto;
 import com.razysave.entity.devices.Device;
+import com.razysave.entity.property.Building;
 import com.razysave.entity.property.Unit;
 import com.razysave.entity.tenant.Tenant;
 import com.razysave.exception.UnitNotFoundException;
 import com.razysave.repository.device.DeviceRepository;
+import com.razysave.repository.property.BuildingRepository;
 import com.razysave.repository.property.UnitRepository;
 import com.razysave.repository.tenant.TenantRepository;
 import com.razysave.service.property.UnitService;
@@ -28,6 +30,8 @@ public class UnitServiceImpl implements UnitService {
     private TenantRepository tenantRepository;
     @Autowired
     private DeviceRepository deviceRepository;
+    @Autowired
+    private BuildingRepository buildingRepository;
     private ModelMapper modelMapper = new ModelMapper();
 
     public List<UnitListDto> getUnits() {
@@ -58,23 +62,30 @@ public class UnitServiceImpl implements UnitService {
     }
 
     public Unit addUnit(Unit unit) {
+
+
         return unitRepository.save(unit);
     }
 
     public Unit updateUnit(Integer id, Unit updatedUnit) {
 
-        Optional<Unit> exisitingUnit = unitRepository.findById(id);
+        Optional<Unit> exisitingUnitOptional = unitRepository.findById(id);
 
-        if (exisitingUnit.isPresent()) {
-            Unit unit = exisitingUnit.get();
+        if (exisitingUnitOptional.isPresent()) {
+            Unit existingUnit = exisitingUnitOptional.get();
             if (updatedUnit.getName() != null) {
-                unit.setName(updatedUnit.getName());
+                existingUnit.setName(updatedUnit.getName());
             }
             if (updatedUnit.getTenant() != null) {
-                unit.setTenant(updatedUnit.getTenant());
-                unit.setOccupied(true);
+                existingUnit.setTenant(updatedUnit.getTenant());
+                existingUnit.setOccupied(true);
             }
-            return unitRepository.save(unit);
+            if (updatedUnit.getDeviceList() != null) {
+                if (existingUnit.getDeviceList() != null)
+                    existingUnit.getDeviceList().addAll(updatedUnit.getDeviceList());
+                else existingUnit.setDeviceList(updatedUnit.getDeviceList());
+            }
+            return unitRepository.save(existingUnit);
         } else {
             throw new RuntimeException("Unit not found with Id : " + updatedUnit.getId());
         }
@@ -84,8 +95,18 @@ public class UnitServiceImpl implements UnitService {
         Optional<Unit> unitOptional = unitRepository.findById(id);
         if (unitOptional.isPresent()) {
             Unit unit = unitOptional.get();
+            Integer buildingId = unit.getBuildingId();
+            Optional<Building> buildingOptional = buildingRepository.findById(buildingId);
+            if (buildingOptional.isPresent()) {
+                Building building = buildingOptional.get();
+                List<Unit> units = building.getUnits().stream()
+                        .filter(b -> !b.getId().equals(unit.getId()))
+                        .collect(Collectors.toList());
+                building.setUnits(units);
+                buildingRepository.save(building);
+            }
             List<Device> devicesToUpdate = new ArrayList<>();
-            Tenant tenant = unit.getTenant();
+       /*     Tenant tenant = unit.getTenant();
             if (tenant != null) {
                 tenant.setUnitId(null);
             }
@@ -94,8 +115,10 @@ public class UnitServiceImpl implements UnitService {
                 device.setUnitId(null);
                 devicesToUpdate.add(device);
             }
+
             tenantRepository.save(tenant);
-            deviceRepository.saveAll(devicesToUpdate);
+            deviceRepository.saveAll(devicesToUpdate);*/
+
             unitRepository.deleteById(id);
         } else {
             throw new UnitNotFoundException("Property Not found with id :" + id);
