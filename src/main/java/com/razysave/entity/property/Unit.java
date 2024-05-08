@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.time.LocalDate;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -20,7 +22,8 @@ public class Unit {
     private String name;
     private Integer buildingId;
     private List<Device> deviceList;
-    private LocalDate installedDate;
+    private String installedDate;
     private Tenant tenant;
     private boolean occupied;
+private Integer PropertyId;
 }
