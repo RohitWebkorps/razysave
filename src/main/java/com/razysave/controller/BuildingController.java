@@ -3,7 +3,6 @@ package com.razysave.controller;
 import com.razysave.dto.BuildingListDto;
 import com.razysave.entity.property.Building;
 import com.razysave.exception.BuildingNotFoundException;
-import com.razysave.repository.property.StudentRepository;
 import com.razysave.response.ResponseHandler;
 import com.razysave.service.property.BuildingService;
 import org.slf4j.Logger;
@@ -17,19 +16,17 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-@RequestMapping("/building")
+@RequestMapping("/property/{propertyId}/building")
 public class BuildingController {
     private static final Logger logger = LoggerFactory.getLogger(BuildingController.class);
     @Autowired
     private BuildingService buildingService;
-    @Autowired
-    private StudentRepository studentRepository;
 
     @GetMapping("/list")
-    public ResponseEntity<List<BuildingListDto>> getBuildings() {
+    public ResponseEntity<List<BuildingListDto>> getBuildings(@PathVariable Integer propertyId) {
         logger.info("Fetching Building list");
         try {
-        List<BuildingListDto> buildings = buildingService.getBuildings();
+        List<BuildingListDto> buildings = buildingService.getBuildings(propertyId);
             logger.info("Fetched Building list successfully");
             return ResponseEntity.ok(buildings);
         } catch (BuildingNotFoundException e) {

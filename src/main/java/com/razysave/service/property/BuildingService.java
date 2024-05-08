@@ -6,7 +6,7 @@ import com.razysave.entity.property.Building;
 import java.util.List;
 
 public interface BuildingService {
-    public List<BuildingListDto> getBuildings();
+    public List<BuildingListDto> getBuildings(Integer propertyId);
 
     public Building getBuildingById(Integer id);
 

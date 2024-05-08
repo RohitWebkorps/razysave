@@ -36,9 +36,9 @@ public class BuildingServiceImpl implements BuildingService {
     private UnitService unitService;
     private ModelMapper modelMapper = new ModelMapper();
 
-    public List<BuildingListDto> getBuildings() {
+    public List<BuildingListDto> getBuildings(Integer propertyId) {
         logger.info("inside of getBuildings()  method");
-        List<Building> buildings = buildingRepository.findAll();
+        List<Building> buildings = buildingRepository.findByPropertyId(propertyId);
         if (buildings.isEmpty())
             throw new BuildingNotFoundException("Buildings not found");
         else {
@@ -62,7 +62,7 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     public Building addBuilding(Building building) {
-        building.setId(9);
+       // building.setId(9);
         return buildingRepository.save(building);
     }
 
