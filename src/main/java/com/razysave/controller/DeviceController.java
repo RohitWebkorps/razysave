@@ -25,7 +25,7 @@ public class DeviceController {
     @Autowired
     private DeviceService deviceService;
 
-    @GetMapping("/{name}/info/property/propertyId")
+    @GetMapping("/{name}/info/property/{propertyId}")
     public ResponseEntity<Object> getDevices(@PathVariable String name,@PathVariable Integer propertyId) {
         try {
             logger.info("Fetching Device list");
