@@ -17,16 +17,16 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-@RequestMapping("/unit")
+@RequestMapping("/building")
 public class UnitController {
     private static final Logger logger = LoggerFactory.getLogger(BuildingController.class);
     @Autowired
     private UnitService unitService;
 
-    @GetMapping("/list")
-    public ResponseEntity<Object> getUnits() {
+    @GetMapping("{buildingId}/unit/list")
+    public ResponseEntity<Object> getUnits(@PathVariable Integer buildingId) {
         logger.info("Fetching Unit list");
-        List<UnitListDto> units = unitService.getUnits();
+        List<UnitListDto> units = unitService.getUnits(buildingId);
         if (units.isEmpty()) {
             logger.info("Unit list is empty");
             return ResponseEntity.ok(Collections.emptyList());
@@ -35,6 +35,19 @@ public class UnitController {
             return ResponseEntity.ok(units);
         }
     }
+    @GetMapping("/list/property/{propertyId}")
+    public ResponseEntity<Object> getUnitByPropertyId(@PathVariable Integer propertyId) {
+        logger.info("Fetching Unit list");
+        List<UnitListDto> units = unitService.getUnitsByProperty(propertyId);
+        if (units.isEmpty()) {
+            logger.info("Unit list is empty");
+            return ResponseEntity.ok(Collections.emptyList());
+        } else {
+            logger.info("Fetched Unit list successfully");
+            return ResponseEntity.ok(units);
+        }
+    }
+
 
     @GetMapping("/info/{id}")
     public ResponseEntity<Object> getUnitById(@PathVariable Integer id) {

@@ -34,13 +34,19 @@ public class UnitServiceImpl implements UnitService {
     private BuildingRepository buildingRepository;
     private ModelMapper modelMapper = new ModelMapper();
 
-    public List<UnitListDto> getUnits() {
-        List<Unit> units = unitRepository.findAll();
+    public List<UnitListDto> getUnits(Integer buildingId) {
+        List<Unit> units = unitRepository.findByBuildingId(buildingId);
         return units.stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
-
+    public List<UnitListDto> getUnitsByProperty(Integer propertyId)
+    {
+        List<Unit> units = unitRepository.findByPropertyId(propertyId);
+        return units.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
     @Override
     public UnitInfoDto getUnitById(Integer id) {
         Optional<Unit> unitOptional = unitRepository.findById(id);
@@ -62,7 +68,7 @@ public class UnitServiceImpl implements UnitService {
     }
 
     public Unit addUnit(Unit unit) {
-        unit.setId(19);
+        //unit.setId(19);
         return unitRepository.save(unit);
     }
 
