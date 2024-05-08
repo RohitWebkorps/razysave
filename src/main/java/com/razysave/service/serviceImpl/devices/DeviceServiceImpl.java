@@ -117,6 +117,12 @@ public class DeviceServiceImpl implements DeviceService {
             if (updatedDevice.getStatus() != null) {
                 existingDevice.setStatus(updatedDevice.getStatus());
             }
+            if (updatedDevice.getOfflineTime() != null) {
+                existingDevice.setOfflineTime(updatedDevice.getOfflineTime());
+            }
+            if (updatedDevice.getOfflineSince() != null) {
+                existingDevice.setOfflineSince(updatedDevice.getOfflineSince());
+            }
             logger.info("End of updateDevice(String deviceId,DeviceListDto updatedDevice) method");
             return deviceRepository.save(existingDevice);
         } else {
