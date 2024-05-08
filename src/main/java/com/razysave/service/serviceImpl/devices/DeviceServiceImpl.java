@@ -3,15 +3,18 @@ package com.razysave.service.serviceImpl.devices;
 import com.razysave.controller.DeviceController;
 import com.razysave.dto.device.ActiveDeviceDto;
 import com.razysave.dto.device.DeviceListDto;
+import com.razysave.dto.device.InstalledDevices;
 import com.razysave.dto.device.OfflineDeviceDto;
 import com.razysave.entity.devices.Device;
 import com.razysave.entity.property.Building;
+import com.razysave.entity.property.Property;
 import com.razysave.entity.property.Unit;
 import com.razysave.exception.BuildingNotFoundException;
 import com.razysave.exception.DeviceNotFoundException;
 import com.razysave.exception.UnitNotFoundException;
 import com.razysave.repository.device.DeviceRepository;
 import com.razysave.repository.property.BuildingRepository;
+import com.razysave.repository.property.PropertyRepository;
 import com.razysave.repository.property.UnitRepository;
 import com.razysave.service.devices.DeviceService;
 import org.modelmapper.ModelMapper;
@@ -20,6 +23,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,6 +38,8 @@ public class DeviceServiceImpl implements DeviceService {
     private UnitRepository unitRepository;
     @Autowired
     private BuildingRepository buildingRepository;
+    @Autowired
+    private PropertyRepository propertyRepository;
     private ModelMapper modelMapper = new ModelMapper();
 
 
@@ -76,20 +83,22 @@ public class DeviceServiceImpl implements DeviceService {
 
     public Device addDevice(Device device) {
         //device.setId(6);
-      /*  Optional<Unit> unitOptional = unitRepository.findById(unitId);
+        Optional<Unit> unitOptional = unitRepository.findById(device.getUnitId());
         if (unitOptional.isPresent()) {
             Unit unit = unitOptional.get();
-            Integer buildingId = unit.getBuildingId();
-            Optional<Building> buildingOptional = buildingRepository.findById(unitId);
-            if (buildingOptional.isPresent()) {
-                Building building = buildingOptional.get();
-                building.setDeviceCount(building.getDeviceCount() + 1);
-                buildingRepository.save(building);
-            } else
-                throw new RuntimeException("Building not found with BuildingId: " + buildingId);
+            List<Device> devices = new ArrayList<>();
+            if(unit.getDeviceList()!=null) {
+                devices =unit.getDeviceList();
+                devices.add(device);
 
+            }
+            else
+                devices.add(device);
+            unit.setDeviceList(devices);
+            unitRepository.save(unit);
         } else
-            throw new RuntimeException("Unit not found with UnitId: " + unitId);*/
+            throw new RuntimeException("Unit not found with UnitId: " + device.getUnitId());
+
         return deviceRepository.save(device);
     }
 
@@ -140,20 +149,61 @@ public class DeviceServiceImpl implements DeviceService {
         } else
             throw new DeviceNotFoundException("Device not found with id: " + id);
     }
-    public List<OfflineDeviceDto> getOfflineDevices()
+
+    public List<OfflineDeviceDto> getOfflineDevices(Integer propertyId)
     {
-        logger.info("inside of getOfflineDevices() method");
-        List<Device> devices = deviceRepository.findByConnection("offline");
-        if (devices.isEmpty()) {
+        List<Device> offlineDevices = new ArrayList<>();
+        Optional<Property> propertyOptional = propertyRepository.findById(propertyId);
+        if (propertyOptional.isPresent()) {
+            Property property = propertyOptional.get();
+            List<Building> buildings = buildingRepository.findByPropertyId(property.getId());
+            for (Building building : buildings) {
+                List<Unit> units = unitRepository.findByBuildingId(building.getId());
+                for (Unit unit : units) {
+                    List<Device> deviceList = unit.getDeviceList();
+                    if (deviceList != null) {
+                        for (Device device : deviceList) {
+                            if (device.getConnection().equals("offline")) {
+                                offlineDevices.add(device);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (offlineDevices.isEmpty()) {
             logger.info("End of getOfflineDevice() method with exception");
             throw new DeviceNotFoundException("Device not found with offline connection");
         }
         logger.info("End of getOfflineDevices() method");
-        return devices.stream()
+        return offlineDevices.stream()
                 .map(this::mapToOfflineDevice)
                 .collect(Collectors.toList());
     }
 
+    public InstalledDevices getInstalledDevices(Integer propertyId) {
+        InstalledDevices installedDevices = new InstalledDevices();
+        HashMap<String, Integer> deviceCountMap = new HashMap<>();
+        Optional<Property> propertyOptional = propertyRepository.findById(propertyId);
+        if (propertyOptional.isPresent()) {
+            Property property = propertyOptional.get();
+            List<Building> buildings = buildingRepository.findByPropertyId(property.getId());
+            for (Building building : buildings) {
+                List<Unit> units = unitRepository.findByBuildingId(building.getId());
+                for (Unit unit : units) {
+                    List<Device> deviceList = unit.getDeviceList();
+                    if (deviceList != null) {
+                        for (Device device : deviceList) {
+                            String deviceName = device.getName();
+                            deviceCountMap.put(deviceName, deviceCountMap.getOrDefault(deviceName, 0) + 1);
+                        }
+                    }
+                }
+            }
+        }
+        installedDevices.setDeviceCount(deviceCountMap);
+        return installedDevices;
+    }
     private ActiveDeviceDto mapToActiveDeviceDto(Device device) {
         Optional<Unit> unitOptional = unitRepository.findById(device.getUnitId());
         Unit unit = unitOptional.get();
@@ -162,6 +212,8 @@ public class DeviceServiceImpl implements DeviceService {
         dto.setUnitId(unit.getId());
         return dto;
     }
+
+
     private OfflineDeviceDto mapToOfflineDevice(Device device) {
         Optional<Unit> unitOptional = unitRepository.findById(device.getUnitId());
         Unit unit = unitOptional.get();

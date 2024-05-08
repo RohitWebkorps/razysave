@@ -2,6 +2,7 @@ package com.razysave.service.devices;
 
 import com.razysave.dto.device.ActiveDeviceDto;
 import com.razysave.dto.device.DeviceListDto;
+import com.razysave.dto.device.InstalledDevices;
 import com.razysave.dto.device.OfflineDeviceDto;
 import com.razysave.entity.devices.Device;
 import java.util.List;
@@ -10,7 +11,8 @@ public interface DeviceService {
     public List<DeviceListDto> getDevices(String deviceName);
 
     public List<ActiveDeviceDto> getDevicesOnAlert();
-    public List<OfflineDeviceDto> getOfflineDevices();
+    public List<OfflineDeviceDto> getOfflineDevices(Integer propertyId);
+    public InstalledDevices getInstalledDevices(Integer propertyId);
 
     public Device addDevice(Device device);
 

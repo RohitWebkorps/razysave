@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public class Device {
     private String name;
     private Integer battery;
     private String connection;
-    private Date installedDate;
+    private String installedDate;
     private String status;
     private String offlineTime;
     private String offlineSince;

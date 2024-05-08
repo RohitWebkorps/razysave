@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
 public class InsuranceIndexServiceImpl implements InsuranceIndexService {
-    private static final Logger logger = LoggerFactory.getLogger(BuildingController.class);
+    private static final Logger logger = LoggerFactory.getLogger(InsuranceIndexServiceImpl.class);
     @Autowired
     private BuildingRepository buildingRepository;
     @Autowired
@@ -81,6 +81,9 @@ public class InsuranceIndexServiceImpl implements InsuranceIndexService {
             }
             if (updateInsuranceIndex.getCurfewActivity() != null) {
                 exisitingInsuranceIndex.setCurfewActivity(updateInsuranceIndex.getCurfewActivity());
+            }
+            if (updateInsuranceIndex.getPropertyId() != null) {
+                exisitingInsuranceIndex.setPropertyId(updateInsuranceIndex.getPropertyId());
             }
             logger.info("End of updateInsuranceIndexById(Integer id, InsuranceIndex updateInsuranceIndex) method");
             return insuranceIndexRepository.save(exisitingInsuranceIndex);
