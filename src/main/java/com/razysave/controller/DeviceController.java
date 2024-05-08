@@ -95,7 +95,7 @@ public class DeviceController {
     @GetMapping("/offline")
     public ResponseEntity<Object> getOfflineDevice() {
         try {
-            logger.info("Fetching Device list");
+            logger.info("Fetching Offline Device list");
             List<OfflineDeviceDto> devices = deviceService.getOfflineDevices();
             logger.info("Fetched Device list successfully");
             return ResponseEntity.ok(devices);
