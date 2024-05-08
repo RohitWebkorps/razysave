@@ -17,8 +17,8 @@ public class KPI {
     @Id
     private Integer id;
     private Integer propertyId;
-    private HashMap<String, Integer> gallons;
+    private HashMap<String, String> gallons;
     private HashMap<String, String> expenses;
     private HashMap<String, String> revenue;
-    private HashMap<String, Integer> pAndL;
+    private HashMap<String, String> pAndL;
 }

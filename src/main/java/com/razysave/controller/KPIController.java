@@ -3,6 +3,7 @@ package com.razysave.controller;
 import com.razysave.dto.kpi.KPIDto;
 import com.razysave.entity.kpi.KPI;
 import com.razysave.exception.DeviceNotFoundException;
+import com.razysave.exception.KPINotFoundException;
 import com.razysave.response.ResponseHandler;
 import com.razysave.service.kpi.KPIService;
 import org.slf4j.Logger;
@@ -22,13 +23,13 @@ public class KPIController {
     private KPIService kpiService;
 
     @GetMapping
-    public ResponseEntity<KPIDto> getKPI() {
+    public ResponseEntity<List<KPIDto>> getKPI() {
         try {
             logger.info("Fetching KPI list");
             List<KPIDto> kpis = kpiService.getKPI();
             logger.info("Fetched KPI list successfully");
-            return ResponseEntity.ok(null);
-        } catch (DeviceNotFoundException e) {
+            return ResponseEntity.ok(kpis);
+        } catch (KPINotFoundException e) {
             logger.error("An KPINotFoundException exception occurred {},", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

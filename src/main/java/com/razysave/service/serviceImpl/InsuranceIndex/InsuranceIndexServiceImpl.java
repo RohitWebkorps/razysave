@@ -14,11 +14,12 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+@Service
 public class InsuranceIndexServiceImpl implements InsuranceIndexService {
     private static final Logger logger = LoggerFactory.getLogger(BuildingController.class);
     @Autowired
@@ -36,6 +37,8 @@ public class InsuranceIndexServiceImpl implements InsuranceIndexService {
     public List<InsuranceIndexDto> getInsuranceIndex() {
         logger.info("inside of getInsuranceIndex() method");
         List<InsuranceIndex> insuranceIndexDtos = insuranceIndexRepository.findAll();
+        if(insuranceIndexDtos.isEmpty())
+            throw new InsuranceIndexNotFoundException("No insurance Index found");
         logger.info("End of getInsuranceIndex() method");
         return insuranceIndexDtos.stream()
                 .map(this::mapToDto)
