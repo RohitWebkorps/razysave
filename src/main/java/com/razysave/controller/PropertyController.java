@@ -36,10 +36,10 @@ public class PropertyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Property> getPropertyById(@PathVariable Integer id) {
+    public ResponseEntity<PropertyDto> getPropertyById(@PathVariable Integer id) {
         try {
             logger.info("Fetching Property with id {}", id);
-            Property property = propertyService.getPropertyById(id);
+            PropertyDto property = propertyService.getPropertyById(id);
             logger.info("Property with id {} fetched successfully", id);
             return ResponseEntity.ok(property);
         } catch (PropertyNotFoundException e) {

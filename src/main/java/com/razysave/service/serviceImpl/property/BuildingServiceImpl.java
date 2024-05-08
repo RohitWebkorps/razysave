@@ -1,6 +1,5 @@
 package com.razysave.service.serviceImpl.property;
 
-import com.razysave.controller.BuildingController;
 import com.razysave.dto.BuildingListDto;
 import com.razysave.entity.property.Building;
 import com.razysave.entity.property.Property;
@@ -17,13 +16,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class BuildingServiceImpl implements BuildingService {
-    private static final Logger logger = LoggerFactory.getLogger(BuildingController.class);
+    private static final Logger logger = LoggerFactory.getLogger(BuildingServiceImpl.class);
     @Autowired
     private BuildingRepository buildingRepository;
     @Autowired
@@ -39,10 +39,14 @@ public class BuildingServiceImpl implements BuildingService {
     public List<BuildingListDto> getBuildings() {
         logger.info("inside of getBuildings()  method");
         List<Building> buildings = buildingRepository.findAll();
-        logger.info("End of getBuildings()  method");
-        return buildings.stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
+        if (buildings.isEmpty())
+            throw new BuildingNotFoundException("Buildings not found");
+        else {
+            logger.info("End of getBuildings()  method");
+            return buildings.stream()
+                    .map(this::mapToDto)
+                    .collect(Collectors.toList());
+        }
     }
 
     public Building getBuildingById(Integer id) {
@@ -58,6 +62,7 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     public Building addBuilding(Building building) {
+        building.setId(9);
         return buildingRepository.save(building);
     }
 
@@ -92,8 +97,8 @@ public class BuildingServiceImpl implements BuildingService {
             Optional<Property> optionalProperty = propertyRepository.findById(propertyId);
             if (optionalProperty.isPresent()) {
                 Property property = optionalProperty.get();
+                property.setUnitCount(1);
                 property.setUnitCount(property.getUnitCount() - building.getUnitCount());
-
                 List<Building> updatedBuildings = property.getBuilding().stream()
                         .filter(b -> !b.getId().equals(building.getId()))
                         .collect(Collectors.toList());

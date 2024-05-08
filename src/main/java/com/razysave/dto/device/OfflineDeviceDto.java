@@ -1,13 +1,13 @@
 package com.razysave.dto.device;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-public class ActiveDeviceDto {
+@Data
+public class OfflineDeviceDto {
     private String id;
     private String name;
     private Integer buildingId;
     private Integer unitId;
+    private String offlineTime;
+    private String offlineSince;
 }

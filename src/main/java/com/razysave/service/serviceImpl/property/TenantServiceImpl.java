@@ -121,15 +121,17 @@ public class TenantServiceImpl implements TenantService {
         if (unitOptional.isPresent()) {
             Unit unit = unitOptional.get();
             com.razysave.dto.tenant.Property tenantProperty = new com.razysave.dto.tenant.Property();
-            Optional<Building> buildingOptional = buildingRepository.findById(unit.getBuildingId());
-            if (buildingOptional.isPresent()) {
-                Building building = buildingOptional.get();
-                Optional<Property> propertyOptional = propertyRepository.findById(building.getPropertyId());
-                if (propertyOptional.isPresent()) {
-                    Property property = propertyOptional.get();
-                    tenantProperty.setUnitName(unit.getName());
-                    tenantProperty.setPropertyName(property.getName());
-                    dto.setProperty(tenantProperty);
+            tenantProperty.setUnitName(unit.getName());
+            if (unit.getBuildingId() != null) {
+                Optional<Building> buildingOptional = buildingRepository.findById(unit.getBuildingId());
+                if (buildingOptional.isPresent()) {
+                    Building building = buildingOptional.get();
+                    Optional<Property> propertyOptional = propertyRepository.findById(building.getPropertyId());
+                    if (propertyOptional.isPresent()) {
+                        Property property = propertyOptional.get();
+                        tenantProperty.setPropertyName(property.getName());
+                        dto.setProperty(tenantProperty);
+                    }
                 }
             }
         }

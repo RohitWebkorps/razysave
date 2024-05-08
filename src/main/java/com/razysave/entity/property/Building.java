@@ -19,11 +19,15 @@ public class Building {
     private List<Device> devices;
     private Integer propertyId;
     public Integer getUnitCount() {
+        if(units!=null)
         return units.size();
+        return 0;
     }
 
     public Integer getDeviceCount() {
+if(devices!=null)
         return devices.size();
+return 0;
     }
 
 }

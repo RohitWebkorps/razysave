@@ -23,5 +23,4 @@ public class Unit {
     private LocalDate installedDate;
     private Tenant tenant;
     private boolean occupied;
-    private String status;
 }

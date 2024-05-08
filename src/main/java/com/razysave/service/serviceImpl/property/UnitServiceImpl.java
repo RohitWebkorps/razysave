@@ -58,12 +58,11 @@ public class UnitServiceImpl implements UnitService {
             unitInfoDto.setDeviceCount(unitInfoDto.countDevicesByName());
             return unitInfoDto;
         } else
-            throw new RuntimeException("Unit not found with Id : " + id);
+            throw new UnitNotFoundException("Unit not found with Id : " + id);
     }
 
     public Unit addUnit(Unit unit) {
-
-
+        unit.setId(19);
         return unitRepository.save(unit);
     }
 
@@ -121,7 +120,7 @@ public class UnitServiceImpl implements UnitService {
 
             unitRepository.deleteById(id);
         } else {
-            throw new UnitNotFoundException("Property Not found with id :" + id);
+            throw new UnitNotFoundException("Unit Not found with id :" + id);
         }
     }
 

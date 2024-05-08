@@ -2,7 +2,6 @@ package com.razysave.controller;
 
 import com.razysave.dto.BuildingListDto;
 import com.razysave.entity.property.Building;
-import com.razysave.entity.property.Student;
 import com.razysave.exception.BuildingNotFoundException;
 import com.razysave.repository.property.StudentRepository;
 import com.razysave.response.ResponseHandler;
@@ -29,13 +28,13 @@ public class BuildingController {
     @GetMapping("/list")
     public ResponseEntity<List<BuildingListDto>> getBuildings() {
         logger.info("Fetching Building list");
+        try {
         List<BuildingListDto> buildings = buildingService.getBuildings();
-        if (buildings.isEmpty()) {
-            logger.info("Building list is empty");
-            return ResponseEntity.ok(Collections.emptyList());
-        } else {
             logger.info("Fetched Building list successfully");
             return ResponseEntity.ok(buildings);
+        } catch (BuildingNotFoundException e) {
+            logger.info("Building list is empty");
+            return ResponseEntity.ok(Collections.emptyList());
         }
     }
 

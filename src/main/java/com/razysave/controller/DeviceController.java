@@ -2,6 +2,7 @@ package com.razysave.controller;
 
 import com.razysave.dto.device.ActiveDeviceDto;
 import com.razysave.dto.device.DeviceListDto;
+import com.razysave.dto.device.OfflineDeviceDto;
 import com.razysave.entity.devices.Device;
 import com.razysave.exception.DeviceNotFoundException;
 import com.razysave.response.ResponseHandler;
@@ -27,9 +28,9 @@ public class DeviceController {
     public ResponseEntity<Object> getDevices(@PathVariable String name) {
         try {
             logger.info("Fetching Device list");
-           // List<DeviceListDto> devices = deviceService.getDevices(name);
+            List<DeviceListDto> devices = deviceService.getDevices(name);
             logger.info("Fetched Device list successfully");
-            return ResponseEntity.ok(null);
+            return ResponseEntity.ok(devices);
         } catch (DeviceNotFoundException e) {
             logger.error("An DeviceNotFoundException exception occurred {},", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -84,6 +85,18 @@ public class DeviceController {
         try {
             logger.info("Fetching Device list");
             List<ActiveDeviceDto> devices = deviceService.getDevicesOnAlert();
+            logger.info("Fetched Device list successfully");
+            return ResponseEntity.ok(devices);
+        } catch (DeviceNotFoundException e) {
+            logger.error("An DeviceNotFoundException exception occurred {},", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+    @GetMapping("/offline")
+    public ResponseEntity<Object> getOfflineDevice() {
+        try {
+            logger.info("Fetching Device list");
+            List<OfflineDeviceDto> devices = deviceService.getOfflineDevices();
             logger.info("Fetched Device list successfully");
             return ResponseEntity.ok(devices);
         } catch (DeviceNotFoundException e) {

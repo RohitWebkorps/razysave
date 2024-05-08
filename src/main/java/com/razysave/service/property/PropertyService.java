@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PropertyService {
     public List<PropertyDto> getProperties();
-    public Property getPropertyById(Integer id);
+    public PropertyDto getPropertyById(Integer id);
     public Property addProperty(Property property);
 
     public Property updateProperty(Integer id, Property property);

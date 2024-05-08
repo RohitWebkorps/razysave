@@ -22,5 +22,7 @@ public class Device {
     private String connection;
     private Date installedDate;
     private String status;
+    private String offlineTime;
+    private String offlineSince;
     private Map<String, String> reading;
 }

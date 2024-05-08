@@ -1,12 +1,8 @@
 package com.razysave.service.serviceImpl.property;
 
-import com.razysave.dto.device.DeviceListDto;
 import com.razysave.dto.property.PropertyDto;
-import com.razysave.dto.unit.UnitListDto;
 import com.razysave.entity.property.Building;
 import com.razysave.entity.property.Property;
-import com.razysave.entity.property.Unit;
-import com.razysave.entity.tenant.Tenant;
 import com.razysave.exception.PropertyNotFoundException;
 import com.razysave.repository.property.PropertyRepository;
 import com.razysave.service.property.BuildingService;
@@ -30,20 +26,18 @@ public class PropertyServiceImpl implements PropertyService {
     public List<PropertyDto> getProperties() {
         List<Property> properties = propertyRepository.findAll();
         if(properties.isEmpty())
-        {
             throw new PropertyNotFoundException("No Property Found");
-        }
-        else {
+        else
             return properties.stream()
                     .map(this::mapToDto)
                     .collect(Collectors.toList());
-        }
     }
 
-    public Property getPropertyById(Integer id) {
+    public PropertyDto getPropertyById(Integer id) {
         Optional<Property> propertyOptional = propertyRepository.findById(id);
         if (propertyOptional.isPresent()) {
-            return propertyOptional.get();
+            PropertyDto propertyDto = modelMapper.map(propertyOptional.get(), PropertyDto.class);
+            return propertyDto;
         } else {
             throw new PropertyNotFoundException("Property not found with id: " + id);
         }

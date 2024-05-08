@@ -3,11 +3,13 @@ package com.razysave.service.serviceImpl.devices;
 import com.razysave.controller.DeviceController;
 import com.razysave.dto.device.ActiveDeviceDto;
 import com.razysave.dto.device.DeviceListDto;
+import com.razysave.dto.device.OfflineDeviceDto;
 import com.razysave.entity.devices.Device;
 import com.razysave.entity.property.Building;
 import com.razysave.entity.property.Unit;
 import com.razysave.exception.BuildingNotFoundException;
 import com.razysave.exception.DeviceNotFoundException;
+import com.razysave.exception.UnitNotFoundException;
 import com.razysave.repository.device.DeviceRepository;
 import com.razysave.repository.property.BuildingRepository;
 import com.razysave.repository.property.UnitRepository;
@@ -73,7 +75,7 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     public Device addDevice(Device device) {
-        //  Integer unitId = device.getUnitId();
+        //device.setId(6);
       /*  Optional<Unit> unitOptional = unitRepository.findById(unitId);
         if (unitOptional.isPresent()) {
             Unit unit = unitOptional.get();
@@ -130,32 +132,56 @@ public class DeviceServiceImpl implements DeviceService {
             Device device = deviceOptional.get();
             deviceRepository.deleteById(id);
         } else
-            throw new BuildingNotFoundException("Device not found with id: " + id);
+            throw new DeviceNotFoundException("Device not found with id: " + id);
     }
-
+    public List<OfflineDeviceDto> getOfflineDevices()
+    {
+        logger.info("inside of getOfflineDevices() method");
+        List<Device> devices = deviceRepository.findByConnection("offline");
+        if (devices.isEmpty()) {
+            logger.info("End of getOfflineDevice() method with exception");
+            throw new DeviceNotFoundException("Device not found with offline connection");
+        }
+        logger.info("End of getOfflineDevices() method");
+        return devices.stream()
+                .map(this::mapToOfflineDevice)
+                .collect(Collectors.toList());
+    }
 
     private ActiveDeviceDto mapToActiveDeviceDto(Device device) {
         Optional<Unit> unitOptional = unitRepository.findById(device.getUnitId());
         Unit unit = unitOptional.get();
-        Optional<Building> buildingOptional = buildingRepository.findById(unit.getBuildingId());
-        Building building = buildingOptional.get();
-        String buildingName = building.getName();
-        String unitName = unit.getName();
         ActiveDeviceDto dto = modelMapper.map(device, ActiveDeviceDto.class);
-        dto.setBuildingName(buildingName);
-        dto.setUnitName(unitName);
+        dto.setBuildingId(unit.getBuildingId());
+        dto.setUnitId(unit.getId());
+        return dto;
+    }
+    private OfflineDeviceDto mapToOfflineDevice(Device device) {
+        Optional<Unit> unitOptional = unitRepository.findById(device.getUnitId());
+        Unit unit = unitOptional.get();
+        OfflineDeviceDto dto = modelMapper.map(device, OfflineDeviceDto.class);
+        dto.setBuildingId(unit.getBuildingId());
+        dto.setUnitId(unit.getId());
         return dto;
     }
 
     private DeviceListDto mapToDto(Device device) {
         Optional<Unit> unitOptional = unitRepository.findById(device.getUnitId());
-        Unit unit = unitOptional.get();
-        Optional<Building> buildingOptional = buildingRepository.findById(unit.getBuildingId());
-        Building building = buildingOptional.get();
-        String buildingName = building.getName();
-        String unitName = unit.getName();
-        DeviceListDto dto = modelMapper.map(device, DeviceListDto.class);
-        dto.setPropertyName(buildingName + unitName);
-        return dto;
+
+        if (unitOptional.isPresent()) {
+            Unit unit = unitOptional.get();
+            Optional<Building> buildingOptional = buildingRepository.findById(unit.getBuildingId());
+            if (buildingOptional.isPresent()) {
+                Building building = buildingOptional.get();
+                String buildingName = building.getName();
+                String unitName = unit.getName();
+                DeviceListDto dto = modelMapper.map(device, DeviceListDto.class);
+                dto.setPropertyName(buildingName + unitName);
+                return dto;
+            } else {
+                throw new BuildingNotFoundException("Building Not Found with given id");
+            }
+        } else
+            throw new UnitNotFoundException("Unit not Found with given id");
     }
 }
