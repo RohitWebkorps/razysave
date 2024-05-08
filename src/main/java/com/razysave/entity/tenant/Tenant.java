@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,4 +22,5 @@ public class Tenant {
     private String joined;
     private String phone;
     private String email;
+private Integer propertyId;
 }

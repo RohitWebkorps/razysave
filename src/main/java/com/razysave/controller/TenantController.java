@@ -23,10 +23,21 @@ public class TenantController {
     private TenantService tenantService;
     private static final Logger logger = LoggerFactory.getLogger(BuildingController.class);
 
-    @GetMapping("/")
-    public ResponseEntity<Object> getTenants() {
+    @GetMapping("/unit/{unitId}")
+    public ResponseEntity<Object> getTenants(@PathVariable Integer unitId) {
         logger.info("Fetching Tenant list");
-        List<TenantDto> tenants = tenantService.getTenants();
+        List<TenantDto> tenants = tenantService.getTenants(unitId);
+        if (tenants.isEmpty()) {
+            logger.info("Tenant list is empty");
+            return ResponseEntity.ok(Collections.emptyList());
+        } else {
+            logger.info("Fetched Tenant list successfully");
+            return ResponseEntity.ok(tenants);
+        }
+    } @GetMapping("/property/{propertyId}")
+    public ResponseEntity<Object> getTenantsByProperty(@PathVariable Integer propertyId) {
+        logger.info("Fetching Tenant list");
+        List<TenantDto> tenants = tenantService.getTenantsByPropertyId(propertyId);
         if (tenants.isEmpty()) {
             logger.info("Tenant list is empty");
             return ResponseEntity.ok(Collections.emptyList());
@@ -35,6 +46,7 @@ public class TenantController {
             return ResponseEntity.ok(tenants);
         }
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getTenantByName(@PathVariable Integer id) {

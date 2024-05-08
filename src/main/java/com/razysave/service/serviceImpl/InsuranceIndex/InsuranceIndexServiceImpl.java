@@ -1,6 +1,5 @@
 package com.razysave.service.serviceImpl.InsuranceIndex;
 
-import com.razysave.controller.BuildingController;
 import com.razysave.dto.InsuranceIndexDto;
 import com.razysave.entity.insurance.InsuranceIndex;
 import com.razysave.exception.InsuranceIndexNotFoundException;
@@ -34,9 +33,9 @@ public class InsuranceIndexServiceImpl implements InsuranceIndexService {
     private DeviceRepository deviceRepository;
     private ModelMapper modelMapper = new ModelMapper();
 
-    public List<InsuranceIndexDto> getInsuranceIndex() {
+    public List<InsuranceIndexDto> getInsuranceIndex(Integer propertyId) {
         logger.info("inside of getInsuranceIndex() method");
-        List<InsuranceIndex> insuranceIndexDtos = insuranceIndexRepository.findAll();
+        List<InsuranceIndex> insuranceIndexDtos = insuranceIndexRepository.findByPropertyId(propertyId);
         if(insuranceIndexDtos.isEmpty())
             throw new InsuranceIndexNotFoundException("No insurance Index found");
         logger.info("End of getInsuranceIndex() method");

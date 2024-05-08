@@ -17,13 +17,13 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-@RequestMapping("/building")
+@RequestMapping("/unit")
 public class UnitController {
     private static final Logger logger = LoggerFactory.getLogger(BuildingController.class);
     @Autowired
     private UnitService unitService;
 
-    @GetMapping("{buildingId}/unit/list")
+    @GetMapping("/building/{buildingId}/list")
     public ResponseEntity<Object> getUnits(@PathVariable Integer buildingId) {
         logger.info("Fetching Unit list");
         List<UnitListDto> units = unitService.getUnits(buildingId);
@@ -35,7 +35,7 @@ public class UnitController {
             return ResponseEntity.ok(units);
         }
     }
-    @GetMapping("/list/property/{propertyId}")
+    @GetMapping("/property/{propertyId}/list")
     public ResponseEntity<Object> getUnitByPropertyId(@PathVariable Integer propertyId) {
         logger.info("Fetching Unit list");
         List<UnitListDto> units = unitService.getUnitsByProperty(propertyId);

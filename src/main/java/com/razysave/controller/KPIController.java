@@ -22,11 +22,11 @@ public class KPIController {
     @Autowired
     private KPIService kpiService;
 
-    @GetMapping
-    public ResponseEntity<List<KPIDto>> getKPI() {
+    @GetMapping("/property/{propertyId}")
+    public ResponseEntity<List<KPIDto>> getKPI(@PathVariable Integer propertyId) {
         try {
             logger.info("Fetching KPI list");
-            List<KPIDto> kpis = kpiService.getKPI();
+            List<KPIDto> kpis = kpiService.getKPI(propertyId);
             logger.info("Fetched KPI list successfully");
             return ResponseEntity.ok(kpis);
         } catch (KPINotFoundException e) {

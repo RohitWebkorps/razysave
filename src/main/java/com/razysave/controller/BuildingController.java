@@ -16,13 +16,13 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-@RequestMapping("/property/{propertyId}/building")
+@RequestMapping("/building")
 public class BuildingController {
     private static final Logger logger = LoggerFactory.getLogger(BuildingController.class);
     @Autowired
     private BuildingService buildingService;
 
-    @GetMapping("/list")
+    @GetMapping("/property/{propertyId}/list")
     public ResponseEntity<List<BuildingListDto>> getBuildings(@PathVariable Integer propertyId) {
         logger.info("Fetching Building list");
         try {

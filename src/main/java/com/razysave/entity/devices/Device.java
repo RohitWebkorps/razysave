@@ -18,6 +18,7 @@ public class Device {
     @Id
     private Integer id;
     private Integer unitId;
+    private Integer propertyId;
     private String name;
     private Integer battery;
     private String connection;

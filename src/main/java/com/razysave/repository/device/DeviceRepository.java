@@ -8,8 +8,8 @@ import java.util.List;
 
 @Repository
 public interface DeviceRepository extends MongoRepository<Device, Integer> {
-public List<Device> findByName(String name);
-    public List<Device> findByStatus(String status);
+public List<Device> findByNameAndPropertyId(String name,Integer propertyId);
+    public List<Device> findByStatusAndPropertyId(String status,Integer propertyId);
     public List<Device> findByConnection(String connection);
 
 }

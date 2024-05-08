@@ -31,8 +31,16 @@ public class TenantServiceImpl implements TenantService {
     private BuildingRepository buildingRepository;
     private ModelMapper modelMapper = new ModelMapper();
 
-    public List<TenantDto> getTenants() {
-        List<Tenant> tenants = tenantRepository.findAll();
+    public List<TenantDto> getTenants(Integer unitId) {
+        List<Tenant> tenants = tenantRepository.findByUnitId(unitId);
+        return tenants.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TenantDto> getTenantsByPropertyId(Integer propertyId) {
+        List<Tenant> tenants = tenantRepository.findByPropertyId(propertyId);
         return tenants.stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
@@ -111,7 +119,7 @@ public class TenantServiceImpl implements TenantService {
             tenantRepository.deleteById(id);
         }
         else{
-            throw new RuntimeException("Tenant not found with id : " +id);
+            throw new TenantNotFoundException("Tenant not found with id : " +id);
         }
     }
 

@@ -8,9 +8,9 @@ import com.razysave.entity.devices.Device;
 import java.util.List;
 
 public interface DeviceService {
-    public List<DeviceListDto> getDevices(String deviceName);
+    public List<DeviceListDto> getDevices(String deviceName,Integer propertyId);
 
-    public List<ActiveDeviceDto> getDevicesOnAlert();
+    public List<ActiveDeviceDto> getDevicesOnAlert(Integer propertyId);
     public List<OfflineDeviceDto> getOfflineDevices(Integer propertyId);
     public InstalledDevices getInstalledDevices(Integer propertyId);
 

@@ -21,11 +21,11 @@ public class InsuranceController {
     @Autowired
     private InsuranceIndexService insuranceIndexService;
 
-    @GetMapping
-    public ResponseEntity<List<InsuranceIndexDto>> getInsuranceIndex() {
+    @GetMapping("/property/{propertyId}")
+    public ResponseEntity<List<InsuranceIndexDto>> getInsuranceIndex(@PathVariable Integer propertyId) {
         try {
             logger.info("Fetching Insurance");
-            List<InsuranceIndexDto> insuranceIndex = insuranceIndexService.getInsuranceIndex();
+            List<InsuranceIndexDto> insuranceIndex = insuranceIndexService.getInsuranceIndex(propertyId);
             logger.info("Fetched insurance index list successfully");
             return ResponseEntity.ok(insuranceIndex);
         } catch (InsuranceIndexNotFoundException e) {

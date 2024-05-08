@@ -15,5 +15,5 @@ public class DeviceListDto {
     private String propertyName;
     private Integer battery;
     private String connection;
-    private Date installedDate;
+    private String installedDate;
 }

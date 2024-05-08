@@ -25,11 +25,11 @@ public class DeviceController {
     @Autowired
     private DeviceService deviceService;
 
-    @GetMapping("/{name}/info")
-    public ResponseEntity<Object> getDevices(@PathVariable String name) {
+    @GetMapping("/{name}/info/property/propertyId")
+    public ResponseEntity<Object> getDevices(@PathVariable String name,@PathVariable Integer propertyId) {
         try {
             logger.info("Fetching Device list");
-            List<DeviceListDto> devices = deviceService.getDevices(name);
+            List<DeviceListDto> devices = deviceService.getDevices(name,propertyId);
             logger.info("Fetched Device list successfully");
             return ResponseEntity.ok(devices);
         } catch (DeviceNotFoundException e) {
@@ -81,11 +81,11 @@ public class DeviceController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-    @GetMapping("/active-alert")
-    public ResponseEntity<Object> getActiveDevices() {
+    @GetMapping("/active-alert/property/{propertyId}")
+    public ResponseEntity<Object> getActiveDevices(@PathVariable Integer propertyId) {
         try {
             logger.info("Fetching Device list");
-            List<ActiveDeviceDto> devices = deviceService.getDevicesOnAlert();
+            List<ActiveDeviceDto> devices = deviceService.getDevicesOnAlert(propertyId);
             logger.info("Fetched Device list successfully");
             return ResponseEntity.ok(devices);
         } catch (DeviceNotFoundException e) {
@@ -93,7 +93,7 @@ public class DeviceController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-    @GetMapping("/offline/propertyId")
+    @GetMapping("/offline/property/{propertyId}")
     public ResponseEntity<Object> getOfflineDevice(@PathVariable Integer propertyId) {
         try {
             logger.info("Fetching Offline Device list");
@@ -105,7 +105,7 @@ public class DeviceController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-    @GetMapping("/installed-devices/{propertyId}")
+    @GetMapping("/installed-devices/property/{propertyId}")
     public ResponseEntity<Object> getInstalledDevices(@PathVariable Integer propertyId) {
         try {
             logger.info("Fetching Installed Device list");

@@ -43,9 +43,9 @@ public class DeviceServiceImpl implements DeviceService {
     private ModelMapper modelMapper = new ModelMapper();
 
 
-    public List<DeviceListDto> getDevices(String name) {
+    public List<DeviceListDto> getDevices(String name,Integer propertyId) {
         logger.info("inside of getDevices(String name) method");
-        List<Device> devices = deviceRepository.findByName(name);
+        List<Device> devices = deviceRepository.findByNameAndPropertyId(name,propertyId);
         if (devices.isEmpty()) {
             logger.info("End of getDevices(String name) method with exception");
             throw new DeviceNotFoundException("Device not found with Name: " + name);
@@ -56,9 +56,9 @@ public class DeviceServiceImpl implements DeviceService {
                 .collect(Collectors.toList());
     }
 
-    public List<ActiveDeviceDto> getDevicesOnAlert() {
+    public List<ActiveDeviceDto> getDevicesOnAlert(Integer propertyId) {
         logger.info("inside of getDevicesOnAlert() method");
-        List<Device> devices = deviceRepository.findByStatus("alert");
+        List<Device> devices = deviceRepository.findByStatusAndPropertyId("alert",propertyId);
         if (devices.isEmpty()) {
             logger.info("End of getDevicesOnAlert() method with exception");
             throw new DeviceNotFoundException("Device not found with Active alerts: ");

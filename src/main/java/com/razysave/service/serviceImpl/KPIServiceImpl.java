@@ -22,9 +22,9 @@ public class KPIServiceImpl implements KPIService {
     private ModelMapper modelMapper = new ModelMapper();
 
     @Override
-    public List<KPIDto> getKPI() {
+    public List<KPIDto> getKPI(Integer propertyId) {
         logger.info("Enter of getKPI() method");
-        List<KPI> kpiList = kpiRepository.findAll();
+        List<KPI> kpiList = kpiRepository.findByPropertyId(propertyId);
         logger.info("End of getKPI() method");
         return kpiList.stream()
                 .map(this::mapToDto)

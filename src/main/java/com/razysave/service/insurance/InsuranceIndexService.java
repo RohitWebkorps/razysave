@@ -6,7 +6,7 @@ import com.razysave.entity.insurance.InsuranceIndex;
 import java.util.List;
 
 public interface InsuranceIndexService {
-    public List<InsuranceIndexDto> getInsuranceIndex();
+    public List<InsuranceIndexDto> getInsuranceIndex(Integer propertyId);
 
     public InsuranceIndexDto getInsuranceIndexById(Integer id);
 

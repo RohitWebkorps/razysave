@@ -6,7 +6,7 @@ import com.razysave.entity.kpi.KPI;
 import java.util.List;
 
 public interface KPIService {
-    public List<KPIDto> getKPI();
+    public List<KPIDto> getKPI(Integer propertyId);
 
     public KPIDto getKPIById(Integer id);
 
