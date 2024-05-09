@@ -1,17 +1,12 @@
 package com.razysave.entity.devices;
 
 import jakarta.persistence.Id;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Document(collection = "devices")
 public class Device {

@@ -4,7 +4,6 @@ import com.razysave.dto.unit.UnitInfoDto;
 import com.razysave.dto.unit.UnitListDto;
 import com.razysave.entity.property.Unit;
 import com.razysave.exception.UnitNotFoundException;
-import com.razysave.response.ResponseHandler;
 import com.razysave.service.property.UnitService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,63 +18,66 @@ import java.util.List;
 @RestController
 @RequestMapping("/unit")
 public class UnitController {
-    private static final Logger logger = LoggerFactory.getLogger(BuildingController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UnitController.class);
     @Autowired
     private UnitService unitService;
 
     @GetMapping("/building/{buildingId}/list")
-    public ResponseEntity<Object> getUnits(@PathVariable Integer buildingId) {
-        logger.info("Fetching Unit list");
+    public ResponseEntity<List<UnitListDto>> getUnits(@PathVariable Integer buildingId) {
+        try {
+            logger.info("Enter getUnits(@PathVariable Integer buildingId) Fetching Unit list");
         List<UnitListDto> units = unitService.getUnits(buildingId);
-        if (units.isEmpty()) {
-            logger.info("Unit list is empty");
-            return ResponseEntity.ok(Collections.emptyList());
-        } else {
-            logger.info("Fetched Unit list successfully");
+            logger.info("Exit getUnits(@PathVariable Integer buildingId)Unit list is empty");
             return ResponseEntity.ok(units);
-        }
-    }
-    @GetMapping("/property/{propertyId}/list")
-    public ResponseEntity<Object> getUnitByPropertyId(@PathVariable Integer propertyId) {
-        logger.info("Fetching Unit list");
-        List<UnitListDto> units = unitService.getUnitsByProperty(propertyId);
-        if (units.isEmpty()) {
-            logger.info("Unit list is empty");
+        } catch (Exception e) {
+            logger.error("Exit getUnits(@PathVariable Integer buildingId)Unit list is empty {}", e.getMessage());
             return ResponseEntity.ok(Collections.emptyList());
-        } else {
-            logger.info("Fetched Unit list successfully");
-            return ResponseEntity.ok(units);
         }
     }
 
+    @GetMapping("/property/{propertyId}/list")
+    public ResponseEntity<List<UnitListDto>> getUnitByPropertyId(@PathVariable Integer propertyId) {
+        try {
+            logger.info("Enter getUnits(@PathVariable Integer buildingId) Fetching Unit list");
+        List<UnitListDto> units = unitService.getUnitsByProperty(propertyId);
+            logger.info("Exit getUnits(@PathVariable Integer buildingId)");
+            return ResponseEntity.ok(units);
+        } catch (Exception e) {
+            logger.error("Exit getUnits(@PathVariable Integer buildingId) {}", e.getMessage());
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+    }
 
     @GetMapping("/info/{id}")
-    public ResponseEntity<Object> getUnitById(@PathVariable Integer id) {
+    public ResponseEntity<UnitInfoDto> getUnitById(@PathVariable Integer id) {
         try {
-            logger.info("Fetching Unit with id {}", id);
+            logger.info("Enter getUnitById(@PathVariable Integer id) with id {}", id);
             UnitInfoDto unit = unitService.getUnitById(id);
-            logger.info("Fetched Unit with id {}", id);
+            logger.info("Exit getUnitById(@PathVariable Integer id)");
             return ResponseEntity.ok(unit);
         } catch (UnitNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            logger.error("Exit getUnitById(@PathVariable Integer id) {}", e.getMessage());
+            return ResponseEntity.noContent().build();
         }
     }
 
     @PostMapping("/")
-    public ResponseEntity<Object> addUnits(@RequestBody Unit unit) {
+    public ResponseEntity<Unit> addUnits(@RequestBody Unit unit) {
+        logger.info("Enter addUnits(@RequestBody Unit unit)");
         unitService.addUnit(unit);
-        return ResponseHandler.generateResponse("Added succesfully", HttpStatus.CREATED, unit);
+        logger.info("Exit addUnits(@RequestBody Unit unit)");
+        return ResponseEntity.ok(unit);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateUnit(@PathVariable Integer id, @RequestBody Unit updatedUnit) {
         try {
-            logger.info("Updating Unit with id {}", id);
+            logger.info("Enter updateUnit(@PathVariable Integer id, @RequestBody Unit updatedUnit)");
             Unit unit = unitService.updateUnit(id, updatedUnit);
-            logger.info("Updated Unit with id {}", id);
+            logger.info("Exit updateUnit(@PathVariable Integer id, @RequestBody Unit updatedUnit)");
             return ResponseEntity.ok(unit);
         } catch (UnitNotFoundException e) {
-            logger.error("An UnitNotFoundException exception occurred, {}", e.getMessage());
+            logger.error("Exit updateUnit(@PathVariable Integer id, @RequestBody Unit updatedUnit) {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -83,15 +85,14 @@ public class UnitController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUnit(@PathVariable Integer id) {
         try {
-            logger.info("Deleting Unit with id {}", id);
+            logger.info("Enter deleteUnit(@PathVariable Integer id) {}", id);
             unitService.deleteUnitById(id);
-            logger.info("Deleted Unit with id {}", id);
+            logger.info("Exit deleteUnit(@PathVariable Integer id)");
             return ResponseEntity.noContent().build();
         } catch (UnitNotFoundException e) {
-            logger.error("An UnitNotFoundException exception occurred, {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            logger.error("Exit deleteUnit(@PathVariable Integer id) an UnitNotFoundException exception occurred, {}", e.getMessage());
+            return ResponseEntity.ok().build();
         }
     }
-
 }
 

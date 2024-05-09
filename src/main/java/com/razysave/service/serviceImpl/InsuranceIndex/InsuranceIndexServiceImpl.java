@@ -34,10 +34,12 @@ public class InsuranceIndexServiceImpl implements InsuranceIndexService {
     private ModelMapper modelMapper = new ModelMapper();
 
     public List<InsuranceIndexDto> getInsuranceIndex(Integer propertyId) {
-        logger.info("inside of getInsuranceIndex() method");
+        logger.info("Enter of getInsuranceIndex() method");
         List<InsuranceIndex> insuranceIndexDtos = insuranceIndexRepository.findByPropertyId(propertyId);
-        if(insuranceIndexDtos.isEmpty())
+        if(insuranceIndexDtos.isEmpty()) {
+            logger.info("Exit of getInsuranceIndex() method Empty");
             throw new InsuranceIndexNotFoundException("No insurance Index found");
+        }
         logger.info("End of getInsuranceIndex() method");
         return insuranceIndexDtos.stream()
                 .map(this::mapToDto)

@@ -12,6 +12,8 @@ import com.razysave.repository.property.UnitRepository;
 import com.razysave.repository.tenant.TenantRepository;
 import com.razysave.service.property.TenantService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,42 +32,54 @@ public class TenantServiceImpl implements TenantService {
     @Autowired
     private BuildingRepository buildingRepository;
     private ModelMapper modelMapper = new ModelMapper();
-
+    private static final Logger logger = LoggerFactory.getLogger(TenantServiceImpl.class);
     public List<TenantDto> getTenants(Integer unitId) {
+        logger.info("Enter  getTenants(Integer unitId)");
         List<Tenant> tenants = tenantRepository.findByUnitId(unitId);
-        return tenants.stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
+        if (tenants != null) {
+            logger.info("Exit  getTenants(Integer unitId)");
+            return tenants.stream()
+                    .map(this::mapToDto)
+                    .collect(Collectors.toList());
+        } else {
+            logger.info("Exit getTenants(Integer unitId) exception thrown");
+            throw new TenantNotFoundException("Tenant not Found with unitid {}");
+        }
     }
 
     @Override
     public List<TenantDto> getTenantsByPropertyId(Integer propertyId) {
+        logger.info("Enter getTenantsByPropertyId(Integer propertyId)");
         List<Tenant> tenants = tenantRepository.findByPropertyId(propertyId);
+        if (tenants.isEmpty()) {
+            logger.info("Exit getTenantsByPropertyId(Integer propertyId) exception thrown");
+            throw new TenantNotFoundException("Tenant not Found");
+        }
+        logger.info("Exit getTenantsByPropertyId(Integer propertyId)");
         return tenants.stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
 
     public Tenant getTenantById(Integer id) {
+        logger.info("Enter getTenantById(Integer id)");
         Optional<Tenant> tenantOptional = tenantRepository.findById(id);
-        if (tenantOptional.isPresent())
+        if (tenantOptional.isPresent()) {
+            logger.info("Exit getTenantById(Integer id)");
             return tenantOptional.get();
-        else
+        } else {
+            logger.info("Exit getTenantById(Integer id) exception thrown");
             throw new TenantNotFoundException("Tenant not found with id:" + id);
-
-
+        }
     }
 
     public Tenant addTenant(Tenant tenant) {
-        Optional<Unit> unitOptional = unitRepository.findById(tenant.getUnitId());
-        Unit unit = unitOptional.get();
-        unit.setTenant(tenant);
-        unitRepository.save(unit);
+        logger.info("Enter and Exit addTenant(Tenant tenant)");
         return tenantRepository.save(tenant);
     }
 
     public Tenant updateTenant(Integer id, Tenant updatedtenant) {
-
+        logger.info("Enter updateTenant(Integer id, Tenant updatedtenant)");
         Optional<Tenant> exisitingTenantOptinal = tenantRepository.findById(id);
         if (exisitingTenantOptinal.isPresent()) {
             Tenant exisitingTenant = exisitingTenantOptinal.get();
@@ -85,14 +99,16 @@ public class TenantServiceImpl implements TenantService {
             if (updatedtenant.getPhone() != null) {
                 exisitingTenant.setPhone(updatedtenant.getPhone());
             }
-
+            logger.info("Exit updateTenant(Integer id, Tenant updatedtenant)");
             return tenantRepository.save(exisitingTenant);
         } else {
+            logger.info("Exit updateTenant(Integer id, Tenant updatedtenant)");
             throw new RuntimeException("Tenant not found with id : " + updatedtenant.getId());
         }
     }
 
     public void deleteTenantById(Integer id) {
+        logger.info("Enter deleteTenantById(Integer id)");
         Optional<Tenant> tenantOptinal = tenantRepository.findById(id);
         if (tenantOptinal.isPresent()) {
             Tenant tenant = tenantOptinal.get();
@@ -117,8 +133,10 @@ public class TenantServiceImpl implements TenantService {
                 unitRepository.save(unit);
             }
             tenantRepository.deleteById(id);
+            logger.info("Enter deleteTenantById(Integer id)");
         }
         else{
+            logger.info("Exit deleteTenantById(Integer id) exception thrown");
             throw new TenantNotFoundException("Tenant not found with id : " +id);
         }
     }

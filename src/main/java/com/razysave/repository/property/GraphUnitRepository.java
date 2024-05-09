@@ -5,6 +5,6 @@ import com.razysave.entity.property.GraphUnit;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface GraphUnitRepository extends MongoRepository<GraphUnit, Integer> {
-    public GraphUnit findByPropertyId(Integer propertyId);
+    public GraphUnit findByUnitId(Integer propertyId);
 
 }

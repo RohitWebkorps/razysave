@@ -4,7 +4,6 @@ import com.razysave.dto.tenant.TenantDto;
 import com.razysave.entity.tenant.Tenant;
 import com.razysave.exception.BuildingNotFoundException;
 import com.razysave.exception.TenantNotFoundException;
-import com.razysave.response.ResponseHandler;
 import com.razysave.service.property.TenantService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,72 +20,75 @@ import java.util.List;
 public class TenantController {
     @Autowired
     private TenantService tenantService;
-    private static final Logger logger = LoggerFactory.getLogger(BuildingController.class);
+    private static final Logger logger = LoggerFactory.getLogger(TenantController.class);
 
     @GetMapping("/unit/{unitId}")
     public ResponseEntity<Object> getTenants(@PathVariable Integer unitId) {
-        logger.info("Fetching Tenant list");
+        try {
+            logger.info("Enter getTenants(@PathVariable Integer unitId)");
         List<TenantDto> tenants = tenantService.getTenants(unitId);
-        if (tenants.isEmpty()) {
-            logger.info("Tenant list is empty");
-            return ResponseEntity.ok(Collections.emptyList());
-        } else {
-            logger.info("Fetched Tenant list successfully");
+            logger.info("Exit getTenants(@PathVariable Integer unitId)");
             return ResponseEntity.ok(tenants);
+        } catch (Exception e) {
+            logger.error("Exit getTenants(@PathVariable Integer unitId) with exceotion {}", e.getMessage());
+            return ResponseEntity.ok(Collections.emptyList());
         }
     } @GetMapping("/property/{propertyId}")
     public ResponseEntity<Object> getTenantsByProperty(@PathVariable Integer propertyId) {
-        logger.info("Fetching Tenant list");
+        try {
+            logger.info("Enter getTenantsByProperty(@PathVariable Integer propertyId) Fetching Tenant list");
         List<TenantDto> tenants = tenantService.getTenantsByPropertyId(propertyId);
-        if (tenants.isEmpty()) {
-            logger.info("Tenant list is empty");
-            return ResponseEntity.ok(Collections.emptyList());
-        } else {
             logger.info("Fetched Tenant list successfully");
             return ResponseEntity.ok(tenants);
+        } catch (Exception e) {
+            logger.error("exit Tenant list is empty {}", e.getMessage());
+            return ResponseEntity.ok(Collections.emptyList());
         }
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getTenantByName(@PathVariable Integer id) {
         try {
-            logger.info("Fetching Tenant with id {}", id);
+            logger.info("Enter getTenantByName(@PathVariable Integer id)  Fetching Tenant with id {}", id);
             Tenant tenant = tenantService.getTenantById(id);
+            logger.info("Exit getTenantByName(@PathVariable Integer id)  Fetching Tenant with id {}", id);
             return ResponseEntity.ok(tenant);
         } catch (BuildingNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            logger.error("Exit getTenantByName(@PathVariable Integer id) {}", e.getMessage());
+            return ResponseEntity.ok(Collections.emptyList());
         }
     }
 
     @PostMapping("/")
     public ResponseEntity<Object> addTenant(@RequestBody Tenant tenant) {
+        logger.info("Enter addTenant(@RequestBody Tenant tenant)");
         tenantService.addTenant(tenant);
-        return ResponseHandler.generateResponse("Added succesfully", HttpStatus.CREATED, tenant);
+        logger.info("Exit addTenant(@RequestBody Tenant tenant)");
+        return ResponseEntity.ok(tenant);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateTenant(@PathVariable Integer id, @RequestBody Tenant updatedTenant) {
         try {
-            logger.info("Updating Tenant with id {}", id);
+            logger.info("Enter updateTenant(@PathVariable Integer id, @RequestBody Tenant updatedTenant)");
             Tenant tenant = tenantService.updateTenant(id, updatedTenant);
-            logger.info("Updated Tenant with id {}", id);
+            logger.info("Exit updateTenant(@PathVariable Integer id, @RequestBody Tenant updatedTenant)");
             return ResponseEntity.ok(tenant);
         } catch (TenantNotFoundException e) {
-            logger.error("An TenantNotFoundException exception occurred, {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            logger.error("Exit updateTenant(@PathVariable Integer id, @RequestBody Tenant updatedTenant) an TenantNotFoundException exception occurred, {}", e.getMessage());
+            return ResponseEntity.noContent().build();
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteTenant(@PathVariable Integer id) {
         try {
-            logger.info("Deleting Tenant with id {}", id);
+            logger.info("Enter deleteTenant(@PathVariable Integer id)");
             tenantService.deleteTenantById(id);
-            logger.info("Deleted Tenant with id {}", id);
+            logger.info("Exit deleteTenant(@PathVariable Integer id)");
             return ResponseEntity.noContent().build();
         } catch (BuildingNotFoundException e) {
-            logger.error("An TenantNotFoundException exception occurred, {}", e.getMessage());
+            logger.error("Exit deleteTenant(@PathVariable Integer id) an TenantNotFoundException exception occurred, {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

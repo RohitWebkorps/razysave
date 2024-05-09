@@ -10,6 +10,7 @@ import java.util.List;
 public interface DeviceRepository extends MongoRepository<Device, Integer> {
 public List<Device> findByNameAndPropertyId(String name,Integer propertyId);
     public List<Device> findByStatusAndPropertyId(String status,Integer propertyId);
-    public List<Device> findByConnection(String connection);
+    public List<Device> findByPropertyIdAndConnection(Integer propertyId,String connection);
+    public List<Device> findByPropertyId(Integer propertyId);
 
 }

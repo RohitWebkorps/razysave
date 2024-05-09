@@ -18,6 +18,7 @@ public class Building {
     private List<Unit> units;
     private List<Device> devices;
     private Integer propertyId;
+
     public Integer getUnitCount() {
         if(units!=null)
         return units.size();
@@ -25,9 +26,9 @@ public class Building {
     }
 
     public Integer getDeviceCount() {
-if(devices!=null)
+        if (devices != null)
         return devices.size();
-return 0;
+        return 0;
     }
 
 }

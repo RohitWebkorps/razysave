@@ -20,7 +20,6 @@ public class UnitInfoDto {
     private String tenantPhone;
     private String tenantEmail;
     private String status;
-    // private Map<String,Integer> waterUsage;
 
     public Map<String, Integer> countDevicesByName() {
         Map<String, Integer> deviceCountMap = new HashMap<>();

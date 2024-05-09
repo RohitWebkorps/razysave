@@ -17,21 +17,19 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @SpringBootTest
 public class DeviceServiceImplTest {
     @Autowired
     private DeviceService deviceService;
-@Autowired
-private PropertyService propertyService;
-@Autowired
-private BuildingService buildingService;
-@Autowired
-private UnitService unitService;
+    @Autowired
+    private PropertyService propertyService;
+    @Autowired
+    private BuildingService buildingService;
+    @Autowired
+    private UnitService unitService;
     @Test
     public void getDeviceSuccessTest() {
         Property property = new Property();
@@ -108,17 +106,18 @@ private UnitService unitService;
     @Test
     public void getOfflineDevicesSuccessTest() {
         Property property=new Property();
-        property.setId(200);
+        property.setId(900);
         Building building=new Building();
         building.setId(200);
-        building.setPropertyId(200);
+        building.setPropertyId(property.getId());
         Unit unit = new Unit();
         unit.setId(200);
-        unit.setBuildingId(200);
+        unit.setBuildingId(building.getId());
         Device device = new Device();
         device.setId(200);
-        device.setUnitId(200);
+        device.setUnitId(unit.getId());
         device.setConnection("offline");
+        device.setPropertyId(property.getId());
         propertyService.addProperty(property);
         buildingService.addBuilding(building);
         unitService.addUnit(unit);
@@ -141,9 +140,11 @@ private UnitService unitService;
         device1.setId(200);
         device1.setUnitId(200);
         device1.setName("temprature");
+        device1.setPropertyId(property.getId());
         Device device2 = new Device();
         device2.setId(200);
         device2.setUnitId(200);
+        device2.setPropertyId(property.getId());
         device2.setName("Humidity");
         deviceList.add(device1);
         deviceList.add(device2);

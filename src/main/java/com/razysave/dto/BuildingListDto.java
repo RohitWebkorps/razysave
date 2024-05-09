@@ -10,6 +10,4 @@ public class BuildingListDto {
     private String name;
     private Integer unitCount;
     private Integer deviceCount;
-
-
 }

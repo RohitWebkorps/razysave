@@ -1,16 +1,11 @@
 package com.razysave.entity.tenant;
 
 import jakarta.persistence.Id;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Document(collection = "tenants")
 public class Tenant {

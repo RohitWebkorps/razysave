@@ -37,7 +37,7 @@ public class BuildingServiceImpl implements BuildingService {
     private ModelMapper modelMapper = new ModelMapper();
 
     public List<BuildingListDto> getBuildings(Integer propertyId) {
-        logger.info("inside of getBuildings()  method");
+        logger.info("Enter getBuildings()  method");
         List<Building> buildings = buildingRepository.findByPropertyId(propertyId);
         if (buildings.isEmpty())
             throw new BuildingNotFoundException("Buildings not found");
@@ -50,7 +50,7 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     public Building getBuildingById(Integer id) {
-        logger.info("inside of getBuildingById(Integer id)  method");
+        logger.info("Enter getBuildingById(Integer id)  method");
         Optional<Building> buildingOptional = buildingRepository.findById(id);
         if (buildingOptional.isPresent()) {
             logger.info("End of getBuildingById(Integer id)  method");
@@ -67,7 +67,7 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     public Building updateBuilding(Integer id, Building updatedBuilding) {
-        logger.info("inside of updateBuilding(Integer id, Building updatedBuilding) method");
+        logger.info("Enter updateBuilding(Integer id, Building updatedBuilding) method");
         Optional<Building> exisitingBuildingOptional = buildingRepository.findById(id);
         if (exisitingBuildingOptional.isPresent()) {
             Building exisitingBuilding = exisitingBuildingOptional.get();
@@ -109,8 +109,10 @@ public class BuildingServiceImpl implements BuildingService {
             for (Unit unit : units) {
                 unitService.deleteUnitById(unit.getId());
             }
+            logger.info("Exit deleteBuildingById(Integer id) method");
             buildingRepository.deleteById(id);
         } else {
+            logger.info("Enter deleteBuildingById(Integer id)  method with exception");
             throw new BuildingNotFoundException("Building not found with id: " + id);
         }
     }

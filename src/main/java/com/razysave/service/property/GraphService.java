@@ -20,5 +20,10 @@ public interface GraphService {
     public List<GraphYearDto> getGraphByUnitYear(Integer propertyId);
     public GraphProperty addGraphProperty(GraphProperty graph);
     public GraphUnit addGraphUnit(GraphUnit graph);
-
+    public void deleteGraphProperty(Integer id);
+    public void deleteGraphUnit(Integer id);
+    public GraphUnit getGraphUnitById(Integer id);
+    public GraphProperty getGraphPropertytById(Integer id);
+    public GraphUnit updateGraphUnit(GraphUnit  graphUnitUpdated, Integer id );
+    public GraphProperty updateGraphProperty(GraphProperty graphProperty,Integer id);
 }
