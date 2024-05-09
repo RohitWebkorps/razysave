@@ -45,7 +45,7 @@ public class PropertyServiceImpl implements PropertyService {
 
 
     public Property addProperty(Property property) {
-       property.setId(4);
+       //property.setId(4);
        return propertyRepository.save(property);
     }
 

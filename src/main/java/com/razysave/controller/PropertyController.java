@@ -79,4 +79,17 @@ public class PropertyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    @GetMapping("/{propertyId}/graph")
+    public ResponseEntity<Object> graph(@PathVariable Integer id) {
+        try {
+            logger.info("Deleting Property with id {}", id);
+            //propertyService.g(id);
+            logger.info("Property with id {} fetched successfully", id);
+            return ResponseEntity.noContent().build();
+        } catch (BuildingNotFoundException e) {
+            logger.error("An PropertyNotFoundException exception occurred, {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }
