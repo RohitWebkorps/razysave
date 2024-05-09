@@ -82,24 +82,24 @@ private GraphService graphService;
         }
     }
 
-    @PostMapping("/property/{propertyId}")
+    @PostMapping("/property")
     public ResponseEntity<GraphProperty> addGraphProperty(@RequestBody GraphProperty graph) {
         try {
             GraphProperty graph1 = graphService.addGraphProperty(graph);
             return ResponseEntity.ok(graph1);
 
         } catch (GraphNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.internalServerError().build();
         }
     }
-    @PostMapping("/unit/{propertyId}")
+    @PostMapping("/unit")
     public ResponseEntity<GraphUnit> addGraphUnit(@RequestBody GraphUnit graph) {
         try {
             GraphUnit graph1 = graphService.addGraphUnit(graph);
             return ResponseEntity.ok(graph1);
 
         } catch (GraphNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.internalServerError().build();
         }
     }
 }
