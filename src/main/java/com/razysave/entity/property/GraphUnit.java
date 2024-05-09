@@ -11,10 +11,10 @@ public class GraphUnit {
     private Integer id;
     private Integer unitId;
     private Integer propertyId;
-    private Week estWeek;
-    private Month estMonth;
-    private Year estYear;
-    private Week curWeek;
-    private Month curMonth;
-    private Year curYear;
+    private Integer[] estWeek;
+    private Integer[] estMonth;
+    private Integer[] estYear;
+    private Integer[] curWeek;
+    private Integer[] curMonth;
+    private Integer[] curYear;
 }

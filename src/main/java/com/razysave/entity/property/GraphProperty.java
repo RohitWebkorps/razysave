@@ -1,8 +1,6 @@
 package com.razysave.entity.property;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -10,10 +8,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class GraphProperty {
     private Integer id;
     private Integer propertyId;
-    private Week estWeek;
-    private Month estMonth;
-    private Year estYear;
-    private Week curWeek;
-    private Month curMonth;
-    private Year curYear;
+    private Integer[] estWeek;
+    private Integer[] estMonth;
+    private Integer[] estYear;
+    private Integer[] curWeek;
+    private Integer[] curMonth;
+    private Integer[] curYear;
 }
